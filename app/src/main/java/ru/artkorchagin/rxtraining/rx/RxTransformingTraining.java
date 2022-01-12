@@ -3,6 +3,8 @@ package ru.artkorchagin.rxtraining.rx;
 import java.util.List;
 
 import io.reactivex.Observable;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Function;
 import io.reactivex.observables.GroupedObservable;
 import ru.artkorchagin.rxtraining.entity.Entity;
 import ru.artkorchagin.rxtraining.exceptions.NotImplementedException;
@@ -24,7 +26,9 @@ public class RxTransformingTraining {
      * преобразованные из чисел в {@code intObservable}
      */
     public Observable<String> transformIntToString(Observable<Integer> intObservable) {
-        throw new NotImplementedException();
+        return intObservable.map(
+                item -> item.toString()
+        );
     }
 
     /**
@@ -36,7 +40,14 @@ public class RxTransformingTraining {
      * {@code idObservable}
      */
     public Observable<Entity> requestEntityById(Observable<Integer> idObservable) {
-        throw new NotImplementedException();
+        return idObservable
+                .flatMap(new Function<Integer, Observable<Entity>>() {
+
+                    @Override
+                    public Observable<Entity> apply(@NonNull Integer integer) throws Exception {
+                        return requestApiEntity(integer);
+                    }
+                });
     }
 
     /**
@@ -48,7 +59,7 @@ public class RxTransformingTraining {
      * поток имён объединённых первой буквой в имени
      */
     public Observable<GroupedObservable<Character, String>> distributeNamesByFirstLetter(Observable<String> namesObservable) {
-        throw new NotImplementedException();
+        return namesObservable.groupBy(name -> name.charAt(0));
     }
 
     /**
@@ -60,8 +71,8 @@ public class RxTransformingTraining {
      * @return {@code Observable} который эммитит списки чисел из {@code intObservable}
      */
     public Observable<List<Integer>> collectsIntsToLists(int listsSize, Observable<Integer> intObservable) {
-        throw new NotImplementedException();
-    }
+        return intObservable.buffer(listsSize);
+     }
 
     /* Вспомогательные методы */
 

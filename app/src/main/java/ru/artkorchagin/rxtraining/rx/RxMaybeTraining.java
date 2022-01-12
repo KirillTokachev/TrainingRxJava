@@ -21,7 +21,13 @@ public class RxMaybeTraining {
      * либо не эммитит ничего, если {@code value} отрицательное
      */
     Maybe<Integer> positiveOrEmpty(Integer value) {
-        throw new NotImplementedException();
+        return Maybe.create(emitter -> {
+            if (value > 0) {
+                emitter.onSuccess(value);
+            } else {
+                emitter.onComplete();
+            }
+        });
     }
 
     /**
@@ -32,7 +38,13 @@ public class RxMaybeTraining {
      * положительное число, иначе не эммитит ничего
      */
     Maybe<Integer> positiveOrEmpty(Single<Integer> valueSingle) {
-        throw new NotImplementedException();
+        return valueSingle.flatMapMaybe(value -> Maybe.create(emitter -> {
+            if (value > 0) {
+                emitter.onSuccess(value);
+            } else {
+                emitter.onComplete();
+            }
+        }));
     }
 
     /**
@@ -43,7 +55,7 @@ public class RxMaybeTraining {
      * последовательность пустая
      */
     Maybe<Integer> calculateSumOfValues(Observable<Integer> integerObservable) {
-        throw new NotImplementedException();
+        return integerObservable.reduce((x, y) -> x + y);
     }
 
     /**
@@ -54,7 +66,7 @@ public class RxMaybeTraining {
      * {@code defaultValue} если последовательность пустая
      */
     Single<Integer> leastOneElement(Maybe<Integer> integerMaybe, int defaultValue) {
-        throw new NotImplementedException();
+        return integerMaybe.switchIfEmpty(Single.just(defaultValue));
     }
 
 }
