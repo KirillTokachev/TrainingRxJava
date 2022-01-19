@@ -49,8 +49,7 @@ public class RxCreatingTraining {
      * {@link #expensiveMethod()}
      */
     public Observable<Integer> expensiveMethodResult() {
-        return Observable.just(1)
-                .doOnSubscribe(run -> expensiveMethod());
+        return Observable.defer(() -> Observable.just(expensiveMethod()));
     }
 
     /**
@@ -90,7 +89,7 @@ public class RxCreatingTraining {
      * 3. {@link #unstableMethod(boolean)}
      */
     public Observable<Integer> combinationExpensiveMethods(final boolean unstableCondition) {
-        return Observable.just(1,2,3).create(emitter -> {
+        return Observable.create(emitter -> {
             emitter.onNext(expensiveMethod());
             emitter.onNext(alternativeExpensiveMethod());
             emitter.onNext(unstableMethod(unstableCondition));
